@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Management System</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            text-align: center;
+            background-color: #f4f4f4;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        input {
+            padding: 8px;
+            margin: 5px;
+            width: 150px;
+            text-align: center;
+        }
+
+        button {
+            padding: 8px 12px;
+            margin: 5px;
+            cursor: pointer;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        table {
+            margin: auto;
+            border-collapse: collapse;
+            width: 70%;
+            background: white;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .arrow-btn {
+            width: 35px;
+            height: 35px;
+            font-size: 18px;
+            margin: 2px;
+        }
+    </style>
+</head>
+
+<body>
+
+<h2>Student Management System</h2>
+
+<!-- ID with arrows -->
+<div>
+    <button class="arrow-btn" onclick="changeValue('id', -1)">−</button>
+    <input type="number" id="id" placeholder="ID" value="1">
+    <button class="arrow-btn" onclick="changeValue('id', 1)">+</button>
+</div>
+
+<!-- Name -->
+<input type="text" id="name" placeholder="Name">
+
+<!-- Age with arrows -->
+<div>
+    <button class="arrow-btn" onclick="changeValue('age', -1)">−</button>
+    <input type="number" id="age" placeholder="Age" value="18">
+    <button class="arrow-btn" onclick="changeValue('age', 1)">+</button>
+</div>
+
+<!-- Course -->
+<input type="text" id="course" placeholder="Course">
+
+<br>
+
+<button onclick="addStudent()">Add</button>
+<button onclick="updateStudent()">Update</button>
+<button onclick="deleteStudent()">Delete</button>
+
+<h3>Student List</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Course</th>
+        </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+</table>
+
+<script>
+
+let students = JSON.parse(localStorage.getItem("students")) || [];
+
+function saveData() {
+    localStorage.setItem("students", JSON.stringify(students));
+}
+
+/* 🔼🔽 CUSTOM ARROW FUNCTION */
+function changeValue(field, step) {
+    let input = document.getElementById(field);
+    let value = parseInt(input.value) || 0;
+    input.value = value + step;
+}
+
+/* ADD */
+function addStudent() {
+    let id = document.getElementById("id").value;
+    let name = document.getElementById("name").value;
+    let age = document.getElementById("age").value;
+    let course = document.getElementById("course").value;
+
+    students.push({id, name, age, course});
+    saveData();
+    display();
+}
+
+/* DISPLAY = READ */
+function display() {
+    let table = document.getElementById("tableBody");
+    table.innerHTML = "";
+
+    students.forEach(s => {
+        table.innerHTML += `
+            <tr>
+                <td>${s.id}</td>
+                <td>${s.name}</td>
+                <td>${s.age}</td>
+                <td>${s.course}</td>
+            </tr>
+        `;
+    });
+}
+
+/* UPDATE */
+function updateStudent() {
+    let id = document.getElementById("id").value;
+
+    students.forEach(s => {
+        if (s.id == id) {
+            s.name = document.getElementById("name").value;
+            s.age = document.getElementById("age").value;
+            s.course = document.getElementById("course").value;
+        }
+    });
+
+    saveData();
+    display();
+}
+
+/* DELETE */
+function deleteStudent() {
+    let id = document.getElementById("id").value;
+
+    students = students.filter(s => s.id != id);
+
+    saveData();
+    display();
+}
+
+/* LOAD DATA */
+display();
+
+</script>
+
+</body>
+</html>
